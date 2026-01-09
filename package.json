@@ -1,0 +1,72 @@
+{
+  "name": "next-auto-import",
+  "type": "module",
+  "version": "0.0.0",
+  "packageManager": "pnpm@10.24.0",
+  "description": "Auto-import generator for Next.js projects",
+  "author": "Brendan Dash <me@aiwan.run> (https://aiwan.run)",
+  "license": "MIT",
+  "homepage": "https://github.com/Debbl/next-auto-import#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Debbl/next-auto-import.git"
+  },
+  "bugs": "https://github.com/Debbl/next-auto-import/issues",
+  "keywords": [
+    "next",
+    "nextjs",
+    "auto-import",
+    "typescript",
+    "dts"
+  ],
+  "exports": {
+    ".": {
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.cjs"
+    },
+    "./package.json": "./package.json"
+  },
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.cts",
+  "files": [
+    "dist",
+    "src"
+  ],
+  "scripts": {
+    "dev": "node ./src/index.ts",
+    "build": "tsdown",
+    "test": "vitest",
+    "release": "pnpm build && bumpp && pnpm publish",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "prepare": "simple-git-hooks"
+  },
+  "dependencies": {
+    "@antfu/utils": "^9.3.0",
+    "local-pkg": "^1.1.2",
+    "magic-string": "^0.30.21",
+    "swc-plugin-auto-import": "^0.0.1",
+    "unimport": "^5.6.0",
+    "unplugin-utils": "^0.3.1"
+  },
+  "devDependencies": {
+    "@debbl/eslint-config": "^3.14.3",
+    "@types/node": "^24.10.1",
+    "bumpp": "^10.3.1",
+    "eslint": "^9.39.1",
+    "lint-staged": "^16.2.7",
+    "next": "^16.1.1",
+    "simple-git-hooks": "^2.13.1",
+    "tsdown": "^0.16.6",
+    "typescript": "^5.9.3",
+    "vitest": "^4.0.11"
+  },
+  "simple-git-hooks": {
+    "pre-commit": "pnpm lint-staged"
+  },
+  "lint-staged": {
+    "*": "eslint --fix"
+  }
+}
