@@ -19,7 +19,7 @@ export function createAutoImport(options: Options = {}) {
           [
             'swc-plugin-auto-import',
             {
-              presets: ['react'],
+              imports: options.imports,
             },
           ],
           ...(nextConfig.experimental?.swcPlugins ?? []),

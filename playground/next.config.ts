@@ -6,7 +6,13 @@ const nextConfig: NextConfig = {
 }
 
 const withAutoImport = createAutoImport({
-  imports: ['react'],
+  imports: [
+    'react',
+    'react-dom',
+    {
+      twl: ['cn'],
+    },
+  ],
 })
 
 export default withAutoImport(nextConfig)
