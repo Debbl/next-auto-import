@@ -7,7 +7,6 @@ coverage
 .idea
 
 # Generated files
-auto-imports.d.ts
 test-output
 
 # Build outputs
