@@ -43,6 +43,9 @@
     "lint:fix": "eslint . --fix",
     "prepare": "simple-git-hooks"
   },
+  "peerDependencies": {
+    "next": "^16.1.1"
+  },
   "dependencies": {
     "@antfu/utils": "^9.3.0",
     "local-pkg": "^1.1.2",
@@ -57,7 +60,6 @@
     "bumpp": "^10.3.1",
     "eslint": "^9.39.1",
     "lint-staged": "^16.2.7",
-    "next": "^16.1.1",
     "simple-git-hooks": "^2.13.1",
     "tsdown": "^0.16.6",
     "typescript": "^5.9.3",
