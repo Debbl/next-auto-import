@@ -13,11 +13,11 @@ Auto-import generator for Next.js projects. Automatically scans your directories
 ## Installation
 
 ```bash
-pnpm add next-auto-import
+pnpm add swc-plugin-auto-import next-auto-import -D
 # or
-npm install next-auto-import
+npm install swc-plugin-auto-import next-auto-import -D
 # or
-yarn add next-auto-import
+yarn add swc-plugin-auto-import next-auto-import -D
 ```
 
 ## Usage
@@ -53,9 +53,11 @@ Make sure to include the generated `.d.ts` file in your `tsconfig.json`:
 }
 ```
 
-## Related
+## Credits
 
 - [unplugin-auto-import](https://github.com/unplugin/unplugin-auto-import) - The original auto-import plugin for Vite, Webpack, Rollup, and more
+
+- [swc-plugin-auto-import](https://github.com/Debbl/swc-plugin-auto-import) - The original auto-import plugin for SWC
 
 ## License
 
