@@ -13,6 +13,7 @@ const withAutoImport = createAutoImport({
       twl: ['cn'],
     },
   ],
+  debug: false,
 })
 
 export default withAutoImport(nextConfig)

@@ -6,7 +6,6 @@ import type {
   ScanDirExportsOptions,
   UnimportOptions,
 } from 'unimport'
-import type { FilterPattern } from 'unplugin-utils'
 import type { PresetName } from './presets'
 
 export interface ImportLegacy {
@@ -110,6 +109,13 @@ export interface BiomeLintrc {
 
 export interface Options {
   /**
+   * Enable debug mode
+   *
+   * @default false
+   */
+  debug?: boolean
+
+  /**
    * Preset names or custom imports map
    *
    * @default []
@@ -176,67 +182,11 @@ export interface Options {
   dts?: string | boolean
 
   /**
-   * Mode for generating the .d.ts file.
-   * - `overwrite`: overwrite the whole existing .d.ts file with the new type definitions.
-   * - `append`: only append the new type definitions to the existing .d.ts file, means the existing type definitions will be kept.
-   * @default 'append'
-   */
-  dtsMode?: 'overwrite' | 'append'
-
-  /**
    * Preserve the original file extensions in the generated .d.ts file.
    * Set to `true` to keep the extensions for .ts and .tsx files.
    * @default false
    */
   dtsPreserveExts?: boolean
-
-  /**
-   * Set default export alias by file name
-   *
-   * @default false
-   */
-  defaultExportByFilename?: boolean
-
-  /**
-   * Rules to include transforming target.
-   *
-   * @default [/\.[jt]sx?$/, /\.astro$/, /\.vue$/, /\.vue\?vue/, /\.vue\.[tj]sx?\?vue/, /\.svelte$/]
-   */
-  include?: FilterPattern
-
-  /**
-   * Rules to exclude transforming target.
-   *
-   * @default [/[\\/]node_modules[\\/]/, /[\\/]\.git[\\/]/]
-   */
-  exclude?: FilterPattern
-
-  /**
-   * Generate corresponding .eslintrc-auto-import.json file.
-   */
-  eslintrc?: ESLintrc
-
-  /**
-   * Generate corresponding .biomelintrc.json file.
-   */
-  biomelintrc?: BiomeLintrc
-
-  /**
-   * Save unimport items into a JSON file for other tools to consume.
-   * Provide a filepath to save the JSON file.
-   *
-   * When set to `true`, it will save to `./.unimport-items.json`
-   *
-   * @default false
-   */
-  dumpUnimportItems?: boolean | string
-
-  /**
-   * Include auto-imported packages in Vite's `optimizeDeps` option
-   *
-   * @default true
-   */
-  viteOptimizeDeps?: boolean
 }
 
 export { PresetName }

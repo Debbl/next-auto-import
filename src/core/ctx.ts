@@ -1,15 +1,13 @@
-import { existsSync, promises as fs } from 'node:fs'
+import { promises as fs } from 'node:fs'
 import { dirname, isAbsolute, relative, resolve } from 'node:path'
 import process from 'node:process'
 import { slash, toArray } from '@antfu/utils'
 import { isPackageExists } from 'local-pkg'
 import { createUnimport, resolvePreset } from 'unimport'
 import { presets } from '../presets'
-import { generateBiomeLintConfigs } from './biomelintrc'
-import { generateESLintConfigs } from './eslintrc'
 import { resolversAddon } from './resolvers'
 import type { Import, InlinePreset } from 'unimport'
-import type { BiomeLintrc, ESLintrc, Options } from '../types'
+import type { Options } from '../types'
 
 export const INCLUDE_RE_LIST = [/\.[jt]sx?$/]
 export const EXCLUDE_RE_LIST = [/[\\/]node_modules[\\/]/, /[\\/]\.git[\\/]/]
@@ -19,27 +17,10 @@ export function createContext(options: Options = {}, root = process.cwd()) {
 
   const {
     dts: preferDTS = isPackageExists('typescript'),
-    dtsMode = 'append',
     dtsPreserveExts = false,
     dirsScanOptions,
     dirs,
   } = options
-
-  const eslintrc: ESLintrc = options.eslintrc || {}
-  eslintrc.enabled = eslintrc.enabled === undefined ? false : eslintrc.enabled
-  eslintrc.filepath = eslintrc.filepath || './.eslintrc-auto-import.json'
-  eslintrc.globalsPropValue =
-    eslintrc.globalsPropValue === undefined ? true : eslintrc.globalsPropValue
-
-  const biomelintrc: BiomeLintrc = options.biomelintrc || {}
-  biomelintrc.enabled = biomelintrc.enabled !== undefined
-  biomelintrc.filepath =
-    biomelintrc.filepath || './.biomelintrc-auto-import.json'
-
-  const dumpUnimportItems =
-    options.dumpUnimportItems === true
-      ? './.unimport-items.json'
-      : (options.dumpUnimportItems ?? false)
 
   const resolvers = options.resolvers ? [options.resolvers].flat(2) : []
 
@@ -112,29 +93,9 @@ ${dts}`.trim()}\n`
         ? resolve(root, 'auto-imports.d.ts')
         : resolve(root, preferDTS)
 
-  const multilineCommentsRE = /\/\*.*?\*\//gs
-  const singlelineCommentsRE = /\/\/.*$/gm
-  const dtsReg = /declare\s+global\s*\{(.*?)[\n\r]\}/s
-  function parseDTS(dts: string) {
-    dts = dts.replace(multilineCommentsRE, '').replace(singlelineCommentsRE, '')
-
-    const code = dts.match(dtsReg)?.[0]
-    if (!code) return
-
-    return Object.fromEntries(
-      Array.from(
-        code.matchAll(/['"]?(const\s*[^\s'"]+)['"]?\s*:\s*(.+?)[,;\r\n]/g),
-      ).map((i) => [i[1], i[2]]),
-    )
-  }
-
   async function generateDTS(file: string) {
     await importsPromise
     const dir = dirname(file)
-    const originalContent = existsSync(file)
-      ? await fs.readFile(file, 'utf-8')
-      : ''
-    const originalDTS = parseDTS(originalContent)
     const currentContent = await unimport.generateTypeDeclarations({
       resolvePath: (i) => {
         if (i.from.startsWith('.') || isAbsolute(i.from)) {
@@ -149,30 +110,7 @@ ${dts}`.trim()}\n`
       },
     })
 
-    if (dtsMode === 'append') {
-      const currentDTS = parseDTS(currentContent)!
-      if (originalDTS) {
-        Object.assign(originalDTS, currentDTS)
-
-        const dtsList = Object.keys(originalDTS)
-          .sort()
-          .map((k) => `  ${k}: ${originalDTS[k]}`)
-        return currentContent.replace(
-          dtsReg,
-          () => `declare global {\n${dtsList.join('\n')}\n}`,
-        )
-      }
-    }
-
     return currentContent
-  }
-
-  async function generateESLint() {
-    return generateESLintConfigs(await unimport.getImports(), eslintrc)
-  }
-
-  async function generateBiomeLint() {
-    return generateBiomeLintConfigs(await unimport.getImports())
   }
 
   // eslint-disable-next-line unicorn/consistent-function-scoping
@@ -182,9 +120,6 @@ ${dts}`.trim()}\n`
   }
 
   let lastDTS: string | undefined
-  let lastESLint: string | undefined
-  let lastBiomeLint: string | undefined
-  let lastUnimportItems: string | undefined
 
   async function writeConfigFiles() {
     const promises: any[] = []
@@ -194,46 +129,6 @@ ${dts}`.trim()}\n`
           if (content !== lastDTS) {
             lastDTS = content
             return writeFile(dts, content)
-          }
-        }),
-      )
-    }
-    if (eslintrc.enabled && eslintrc.filepath) {
-      const filepath = eslintrc.filepath
-      promises.push(
-        generateESLint().then(async (content) => {
-          if (filepath.endsWith('.cjs')) content = `module.exports = ${content}`
-          else if (filepath.endsWith('.mjs') || filepath.endsWith('.js'))
-            content = `export default ${content}`
-
-          content = `${content}\n`
-          if (content.trim() !== lastESLint?.trim()) {
-            lastESLint = content
-            return writeFile(eslintrc.filepath!, content)
-          }
-        }),
-      )
-    }
-
-    if (biomelintrc.enabled) {
-      promises.push(
-        generateBiomeLint().then((content) => {
-          if (content !== lastBiomeLint) {
-            lastBiomeLint = content
-            return writeFile(biomelintrc.filepath!, content)
-          }
-        }),
-      )
-    }
-
-    if (dumpUnimportItems) {
-      promises.push(
-        unimport.getImports().then((items) => {
-          if (!dumpUnimportItems) return
-          const content = JSON.stringify(items, null, 2)
-          if (content !== lastUnimportItems) {
-            lastUnimportItems = content
-            return writeFile(dumpUnimportItems, content)
           }
         }),
       )

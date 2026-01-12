@@ -20,6 +20,7 @@ export function createAutoImport(options: Options = {}) {
             'swc-plugin-auto-import',
             {
               imports: options.imports,
+              debug: options.debug,
             },
           ],
           ...(nextConfig.experimental?.swcPlugins ?? []),
