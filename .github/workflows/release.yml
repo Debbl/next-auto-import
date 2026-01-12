@@ -38,6 +38,15 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-pnpm-store-
 
+      - name: Setup
+        run: npm i -g @antfu/ni
+
+      - name: Install
+        run: nci
+
+      - name: Typecheck
+        run: nr typecheck
+
       - name: Publish to NPM
         run: pnpm -r publish --access public --no-git-checks
 
