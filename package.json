@@ -37,7 +37,7 @@
     "dev": "node ./src/index.ts",
     "build": "tsdown",
     "test": "vitest",
-    "release": "pnpm build && bumpp && pnpm publish",
+    "release": "pnpm build && bumpp",
     "typecheck": "tsc --noEmit",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
