@@ -45,7 +45,7 @@
   },
   "peerDependencies": {
     "next": "^16.1.1",
-    "swc-plugin-auto-import": "0.0.2"
+    "swc-plugin-auto-import": "0.0.5"
   },
   "dependencies": {
     "@antfu/utils": "^9.3.0",
