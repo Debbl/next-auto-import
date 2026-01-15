@@ -1,7 +1,7 @@
 {
   "name": "next-auto-import",
   "type": "module",
-  "version": "0.0.3-next-16.0.10",
+  "version": "0.0.4-next-16.0.10",
   "packageManager": "pnpm@10.24.0",
   "description": "Auto-import generator for Next.js projects",
   "author": "Brendan Dash <me@aiwan.run> (https://aiwan.run)",
